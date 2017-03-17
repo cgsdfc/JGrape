@@ -1,6 +1,10 @@
 /* -*- mode: Java -*-  */
 /* vim:set ts=8 sw=2 sts=2 et: */
 /* 
+ * class: pairmsg
+ * author: cong feng
+ * date: March 17 2017
+ * 
    GRAPE: Graph Engine
    Copyright (C) 2016-2017  Cong Feng    <cgsdfc@126.com>        
    BeiHang University, Changping, Beijing, China

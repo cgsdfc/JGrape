@@ -1,6 +1,10 @@
 /* -*- mode: Java -*-  */
 /* vim:set ts=8 sw=2 sts=2 et: */
 /* 
+ * class: main
+ * author: cong feng
+ * date: March 17 2017
+ * 
 GRAPE: Graph Engine
 Copyright (C) 2016-2017  Cong Feng    <cgsdfc@126.com>        
 BeiHang University, Changping, Beijing, China
@@ -38,7 +42,7 @@ public class main{
       String g=args[1];
       String v=args[2];
       String e=args[3];
-      String r=args[5];
+      String r=args[4];
       String q=args[5];
 
       parser<Integer> p=new gparser (v, e, q);
@@ -46,7 +50,7 @@ public class main{
       loader<Integer> l=new loader<> (p, s);
       sssp ssspworker = new sssp(l.getfragments(), l.getquery());
       ssspworker.run();
-      teller t = new teller(ssspworker.getfinalresult(), g, a);
+      teller t = new teller(ssspworker.getfinalresult(), g, a, ssspworker. getquery());
       t.write();
     }
     catch(cmdargsnumberr c) {
