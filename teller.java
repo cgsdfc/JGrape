@@ -4,13 +4,15 @@ import java.io.*;
 
 public class teller {
 
-        private   ArrayList<HashMap<Integer, Integer>> finalresult;
+        private   ArrayList<TreeMap<Integer, Integer>> finalresult;
         private String gname, alname;
+        private ArrayList<Integer> query;
 
         public void write(){
                 int i=0;
-                for(HashMap<Integer, Integer> result: finalresult){
-                        String name=String.format("%s-%s-query-%d",gname, alname, i++);
+                for(TreeMap<Integer, Integer> result: finalresult){
+                        String name=String.format("%s-%s-query-%d.dat",gname, alname, query.get(i));
+                        i++;
                         try{
                                 FileWriter fw = new FileWriter(name);
                                 for(Map.Entry<Integer, Integer> entry: result.entrySet()){
@@ -25,10 +27,11 @@ public class teller {
                 }
         }
 
-        public teller(ArrayList<HashMap<Integer,Integer>> finalresult, String gname, String alname){
+        public teller(ArrayList<TreeMap<Integer,Integer>> finalresult, String gname, String alname, ArrayList<Integer> query){
                 this.finalresult=finalresult;
                 this.gname=gname;
                 this.alname=alname;
+                this.query=query;
         }
 
 }

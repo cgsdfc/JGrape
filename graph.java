@@ -171,8 +171,6 @@ public class graph implements Adjlist {
         }
 
         public static void main(String [] args) {
-                graph g=simple.simple();
-                System.out.println(g);
                 
         }
 }
