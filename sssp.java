@@ -159,9 +159,10 @@ public class sssp extends worker<pairmsg, Integer> {
 
   public static void main(String [] args) throws FileNotFoundException {
     parser<Integer> p=new gparser ("twitter.v","twitter.e", "twitter.q");
+    query<Integer> q=new squery ("twitter.q");
     splitter s=new splitter("twitter.r");
     loader<Integer> l=new loader<> (p, s);
-    sssp ssspworker = new sssp(l.getfragments(), l.getquery());
+    sssp ssspworker = new sssp(l.getfragments(), q.loadquery());
     ssspworker.run();
 
     teller t = new teller(ssspworker.getfinalresult(), "simple", "sssp",ssspworker.getquery());
