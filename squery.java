@@ -44,7 +44,7 @@ public class squery implements query<Integer> {
   }
 
   public static void main(String [] args) throws FileNotFoundException  {
-    squery sq = new squery ("twitter.q");
+    squery sq = new squery ("sssp-query");
     System.out.println(sq.loadquery());
   }
 }

@@ -35,29 +35,45 @@ public class main{
   public static void main(String [] args) {
     try{
       if(args.length != CMD_NUM){
-        throw new cmdargsnumberr(args.length, CMD_NUM);
+        System.err.printf("Usage: java main algorithm graph vfile efile rfile query%n");
+        System.exit(1);
       }
 
-      String a=args[0];
-      String g=args[1];
-      String v=args[2];
-      String e=args[3];
-      String r=args[4];
-      String q=args[5];
+      // get the actual arguments
+      String argv_a=args[0];
+      String argv_g=args[1];
+      String argv_v=args[2];
+      String argv_e=args[3];
+      String argv_r=args[4];
+      String argv_q=args[5];
+      String argv_p=argv_a;
 
-      parser<Integer> p=new gparser (v, e, q);
-      splitter s=new splitter(r);
-      loader<Integer> l=new loader<> (p, s);
-      sssp ssspworker = new sssp(l.getfragments(), l.getquery());
-      ssspworker.run();
-      teller t = new teller(ssspworker.getfinalresult(), g, a, ssspworker. getquery());
-      t.write();
+      // new the objects
+      parser main_p=new gparser(argv_v, argv_e);
+      splitter main_s=new splitter(argv_r);
+      loader main_l=new loader(main_p, main_s);
+
+      
+      if (argv_a.equals("sssp")) {
+        query<Integer> main_q=new squery(argv_q);
+        worker<pairmsg, Integer> main_w=new sssp( main_l.getfragments(), main_q.loadquery());
+        main_w.setparameter(argv_a, argv_g, argv_p);
+        main_w.run();
+        main_w.write();
+      }
+      else if (argv_a.equals("bfs")){
+        query<pairmsg> main_q=new bquery(argv_q);
+        worker<pairmsg, pairmsg> main_w=new bfs( main_l.getfragments(), main_q.loadquery());
+        main_w.setparameter(argv_a, argv_g, argv_p);
+        main_w.run();
+        main_w.write();
+      }
+      else {
+        System.err.println("Unsupported Algorithm " + argv_a);
+        System.exit(1);
+      }
     }
-    catch(cmdargsnumberr c) {
-      System.err.printf("Usage: java main algorithm graph vfile efile rfile query%n");
-      c.diag();
-      System.exit(1);
-    }
+    
     catch(FileNotFoundException f){
       System.err.println("file not found!!");
       System.exit(1);

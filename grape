@@ -1,1 +1,4 @@
-java main sssp twitter twitter.v twitter.e twitter.r twitter.q    
+algo=$1
+graph=$2
+java main $algo $graph $graph/$graph.v $graph/$graph.e $graph/$graph.r \
+$algo/$graph.q 

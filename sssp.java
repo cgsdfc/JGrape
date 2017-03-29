@@ -142,11 +142,40 @@ public class sssp extends worker<pairmsg, Integer> {
     this.finalresult.add(thisresult);
   }
 
+  protected void clear () {}
 
-  protected sssp(ArrayList<frag> fragments, ArrayList<Integer> query){
-    super(fragments, query);
+  protected void write(){
+    String path="";
+    FileWriter writer=null;
+    int qindex=0;
+
+    for (Integer query: super.queries) {
+      path=String.format ("%s/%s-%s-query-%d.dat",super.prefix, super.graphname, super.algorithm, query);
+      try {
+        writer = new FileWriter (path);
+        for (Map.Entry<Integer,Integer> item: 
+            this.finalresult.get(qindex).entrySet () ) {
+          writer.write(String.format (
+                "%d\t%d\n", 
+                item.getKey(),
+                item.getValue()));
+            }
+        qindex ++;
+        writer.close();
+      }
+      catch (IOException e){
+        System.err.println("IOException hitted when writing" + path );
+        System.exit(1);
+      }
+
+    }
+  }
+
+
+  protected sssp(ArrayList<frag> fragments, ArrayList<Integer> queries){
+    super(fragments, queries);
     this.partials= new ArrayList<> (super.nfrag);
-    this.finalresult= new ArrayList<> (super.query.size());
+    this.finalresult= new ArrayList<> (super.queries.size());
     for(int i=0;i<super.nfrag;++i) {
       this.partials.add(new HashMap<> ());
     }
@@ -157,16 +186,5 @@ public class sssp extends worker<pairmsg, Integer> {
     return this.finalresult;
   }
 
-  public static void main(String [] args) throws FileNotFoundException {
-    parser<Integer> p=new gparser ("twitter.v","twitter.e", "twitter.q");
-    query<Integer> q=new squery ("twitter.q");
-    splitter s=new splitter("twitter.r");
-    loader<Integer> l=new loader<> (p, s);
-    sssp ssspworker = new sssp(l.getfragments(), q.loadquery());
-    ssspworker.run();
-
-    teller t = new teller(ssspworker.getfinalresult(), "simple", "sssp",ssspworker.getquery());
-    t.write();
-  }
 
 }

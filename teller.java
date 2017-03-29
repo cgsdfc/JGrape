@@ -30,36 +30,37 @@ import java.util.*;
 import java.io.*;
 
 
-public class teller {
+public class teller <Q> {
 
-        private   ArrayList<TreeMap<Integer, Integer>> finalresult;
-        private String gname, alname;
-        private ArrayList<Integer> query;
+  private ArrayList<TreeMap<Integer, Integer>> finalresult;
+  private String gname, alname,output;
+  private ArrayList<Q> query;
 
-        public void write(){
-                int i=0;
-                for(TreeMap<Integer, Integer> result: finalresult){
-                        String name=String.format("%s-%s-query-%d.dat",gname, alname, query.get(i));
-                        i++;
-                        try{
-                                FileWriter fw = new FileWriter(name);
-                                for(Map.Entry<Integer, Integer> entry: result.entrySet()){
-                                        String line=String.format("%d\t%d\n", entry.getKey(), entry.getValue());
-                                        fw.write(line);
-                                }
-                                fw.close();
-                        }
-                        catch(IOException e) {
-
-                        }
-                }
+  public void write(){
+    int i=0;
+    for(TreeMap<Integer, Integer> result: finalresult){
+      String name=String.format("%s/%s-%s-%s.res",output,gname, alname, query.get(i).toString());
+      i++;
+      try{
+        FileWriter fw = new FileWriter(name);
+        for(Map.Entry<Integer, Integer> entry: result.entrySet()){
+          String line=String.format("%d\t%d\n", entry.getKey(), entry.getValue());
+          fw.write(line);
         }
+        fw.close();
+      }
+      catch(IOException e) {
 
-        public teller(ArrayList<TreeMap<Integer,Integer>> finalresult, String gname, String alname, ArrayList<Integer> query){
-                this.finalresult=finalresult;
-                this.gname=gname;
-                this.alname=alname;
-                this.query=query;
-        }
+      }
+    }
+  }
+
+  public teller(ArrayList<TreeMap<Integer,Integer>> finalresult, String gname, String alname, ArrayList<Q> query, String output){
+    this.output=output;
+    this.finalresult=finalresult;
+    this.gname=gname;
+    this.alname=alname;
+    this.query=query;
+  }
 
 }

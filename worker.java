@@ -26,28 +26,40 @@ import java.util.*;
 public abstract class worker<M,Q> {
 
   protected ArrayList<mbuffer<M>> messages;
-  protected ArrayList<Q> query;
+  protected ArrayList<Q> queries;
   protected ArrayList<frag> fragments;
   protected int nfrag;
   protected int maxstep;
+  protected String prefix, algorithm, graphname;
 
   public static final int MAX_STEP=100;
 
   protected abstract void peval(frag fragment, Q query, mbuffer<M> message);
   protected abstract void inceval(frag fragment, Q query, mbuffer<M> message);
   protected abstract void assemble();
+  protected abstract void write();
+  protected abstract void clear();
 
 
-  protected ArrayList<Q> getquery(){
-    return this.query;
+  protected ArrayList<Q> getqueries(){
+    return this.queries;
   }
 
-  protected worker(ArrayList<frag> fragments, ArrayList<Q> query){
+  public void setparameter (String algorithm, String graphname, String prefix) {
+    this.algorithm=algorithm;
+    this.prefix=prefix;
+    this.graphname=graphname;
+  }
+
+
+  protected worker(ArrayList<frag> fragments, ArrayList<Q> queries){
     this.nfrag=fragments.size();
     this.messages=new ArrayList<>(nfrag);
     this.fragments=fragments;
-    this.query=query;
+    this.queries=queries;
     this.maxstep=MAX_STEP;
+    this.algorithm=null;
+    this.graphname=null;
 
     for(int i=0;i<nfrag;++i) {
       this.messages.add(new mbuffer<M> (nfrag));
@@ -64,7 +76,7 @@ public abstract class worker<M,Q> {
   }
 
   protected void run(){
-    for(Q q: this.query) {
+    for(Q q: this.queries) {
       for(int i=0;i<this.maxstep;++i){
         for(int j=0;j<this.nfrag;++j){
           try{
@@ -76,7 +88,7 @@ public abstract class worker<M,Q> {
             }
           }
           catch(NullPointerException n){
-            System.err.println(n);
+            n.printStackTrace();
             System.exit(1);
           }
 
@@ -87,6 +99,7 @@ public abstract class worker<M,Q> {
         }
       }
       this.assemble();
+      this.clear();
     }
 
   }

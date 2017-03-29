@@ -28,7 +28,6 @@
 
 import java.util.ArrayList;
 
-public interface parser<Q> {
+public interface parser {
         public void fillgraph(graph g);
-        public ArrayList<Q> loadquery();
 }

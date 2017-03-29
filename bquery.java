@@ -22,21 +22,35 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 */
 
-public class bquery {
-  private int root, bound;
+import java.util.*;
+import java.io.*;
+public class bquery implements query<pairmsg> {
+  private ArrayList<pairmsg> queries;
+  private Scanner qs;
 
-  public bquery (int root, int bound){
-    this.root=root;
-    this.bound=bound;
+  public ArrayList<pairmsg> loadquery(){
+    return this.queries;
   }
 
-  public int getbound(){
-    return bound;
+  public bquery (String queryfile) throws FileNotFoundException {
+    this.qs=new Scanner (new FileReader (queryfile) );
+    this.queries=new ArrayList<> ();
+    int [] val = new int [2];
+
+    while (qs.hasNext()) {
+      val[0]=qs.nextInt ();
+      val[1]=qs.nextInt();
+      queries.add(new pairmsg (val[0], val[1]));
+    }
+  }
+
+  public static int getbound(pairmsg p){
+    return p.getvalue();
   }
 
 
-  public int getroot(){
-    return root;
+  public static int getroot(pairmsg p){
+    return p.getvid();
   }
 
 }

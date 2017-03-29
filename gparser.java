@@ -29,18 +29,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 import java.util.*;
 import java.io.*;
 
-public class gparser implements parser<Integer> {
+public class gparser implements parser {
 
-  private Scanner vs,es,qs;
-
-  public ArrayList<Integer> loadquery(){
-    ArrayList<Integer> q=new ArrayList<>();
-    while(qs.hasNext()){
-      int i=qs.nextInt();
-      q.add(i);
-    }
-    return q;
-  }
+  private Scanner vs,es;
 
   public void fillgraph(graph g){
     fillnodes(g);
@@ -86,19 +77,16 @@ public class gparser implements parser<Integer> {
   }
 
 
-  public gparser(String vfile, String efile, String query) throws FileNotFoundException {
+  public gparser(String vfile, String efile) throws FileNotFoundException {
     this.vs=new Scanner(new FileReader(vfile));
     this.es=new Scanner(new FileReader(efile));
-    this.qs=new Scanner(new FileReader(query));
   } 
 
   public static void main(String [] args) throws FileNotFoundException {
-    gparser gp=new gparser("simple.v", "simple.e", "simple.q");
+    gparser gp=new gparser("simple.v", "simple.e");
     graph g=new graph();
     gp.fillgraph(g);
     System.out.println(g);
 
-    ArrayList<Integer> query=gp.loadquery();
-    System.out.println(query);
   }
 }

@@ -18,7 +18,7 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 
@@ -29,36 +29,36 @@
 import java.util.*;
 import java.io.*;
 public class splitter {
-        private Scanner rs;
-        public static final int nfrag=4;
+  private Scanner rs;
+  public static final int nfrag=4;
 
-        splitter(String path) throws FileNotFoundException {
-                this.rs=new Scanner(new FileReader(path));
+  splitter(String path) throws FileNotFoundException {
+    this.rs=new Scanner(new FileReader(path));
+  }
+
+  public int splitgraph(graph that){
+    int content[] = new int [2];
+    int nfrag=-1;
+    while(rs.hasNext()){
+      try{
+        for(int i=0;i<2;++i) {
+          content[i]=rs.nextInt();
+        }
+        int fid=content[1];
+        that.setfid(content[0], content[1]);
+        if(fid > nfrag){
+          nfrag=fid;
         }
 
-        public int splitgraph(graph that){
-                int content[] = new int [2];
-                int nfrag=-1;
-                while(rs.hasNext()){
-                        try{
-                                for(int i=0;i<2;++i) {
-                                        content[i]=rs.nextInt();
-                                }
-                                int fid=content[1];
-                                that.setfid(content[0], content[1]);
-                                if(fid > nfrag){
-                                        nfrag=fid;
-                                }
-                                
-                        }
-                        catch(InputMismatchException i){
-                                continue;
-                        }
-                        catch(nosuchnode n){
-                                continue;
-                        }
-                }
-                return nfrag+1;
-        }
+      }
+      catch(InputMismatchException i){
+        continue;
+      }
+      catch(nosuchnode n){
+        continue;
+      }
+    }
+    return nfrag+1;
+  }
 }
 
