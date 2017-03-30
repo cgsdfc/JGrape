@@ -77,7 +77,7 @@ public class frag extends graph {
     sb.append(this.outgoingfid.toString());
     sb.append("\n\nincomingfid:\n");
     sb.append(this.incomingfid.toString());
-    sb.append("\n\ngraph:");
+    sb.append("\n\n");
     sb.append(super.toString());
     sb.append("\n");
 

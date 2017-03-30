@@ -56,7 +56,7 @@ public class graph implements Adjlist {
   }
 
   public String toString(){
-    StringBuilder sb=new StringBuilder("GRAPE:\nOUTGOING:");
+    StringBuilder sb=new StringBuilder("graph:\nOUTGOING:");
     for(Map.Entry<Integer, ArrayList<edge>> entry: outgoing.entrySet()){
       int vid=entry.getKey();
       sb.append(String.format("\n(%d) -> (", vid));
@@ -142,8 +142,8 @@ public class graph implements Adjlist {
 
   public ArrayList<Integer> getparents(int vid) {
     ArrayList<Integer> parents=new ArrayList<>();
-    for (edge E:this.getoutgoing(vid)) {
-      parents.add(E.getdst());
+    for (edge E:this.getincoming(vid)) {
+      parents.add(E.getsrc());
     }
     return parents;
   }

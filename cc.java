@@ -66,21 +66,25 @@ public class cc extends worker <pairmsg, Object>{
 
   protected ArrayList <HashMap<Integer,Integer>> localComp; 
   protected ArrayList <HashMap<Integer,Integer>> globalComp; 
-  protected ArrayList <TreeMap<Integer,Integer>> finalresult; 
-  protected ArrayList <cctemporal> temporal;
+  protected ArrayList <HashMap<Integer, ArrayList<Integer>>>
+    outerNodes;
+  protected TreeMap<Integer,Integer> finalresult; 
 
+  // queries.size() should at least be 1
   protected cc (
       ArrayList<frag> fragments, ArrayList<Object> queries)
   {
 
     super(fragments, queries);
-    this.finalresult=new ArrayList <> ();
-    this.localComp=new ArrayList<> ();
-    this.globalComp=new ArrayList <> ();
-    this.temporal=new ArrayList <> ();
+    int nfrag=super.nfrag;
+    this.finalresult=new TreeMap<> ();
+    this.localComp=new ArrayList<> (nfrag);
+    this.globalComp=new ArrayList <> (nfrag);
+    this.outerNodes=new ArrayList <> (nfrag);
     for(int i=0;i<super.nfrag;++i) {
       this.localComp.add(new HashMap<> ());
       this.globalComp.add(new HashMap<> ());
+      this.outerNodes.add(new HashMap<> ());
     }
   }
 
@@ -89,11 +93,11 @@ public class cc extends worker <pairmsg, Object>{
       mbuffer<pairmsg> messageBuffer) {
 
     int WID=fragment.getfid();
+    HashMap<Integer, Integer> messages=new HashMap<> ();
     HashMap<Integer, Integer> localComp=this.localComp.get(WID);
     HashMap<Integer, Integer> globalComp=this.globalComp.get(WID);
-    HashMap<Integer, Integer> messages=new HashMap<> ();
     HashMap<Integer, ArrayList<Integer>> 
-      outerNodes=new HashMap<> ();
+      outerNodes=this.outerNodes.get(WID);
 
     for (node N:fragment.getnodes()) {
       int xid=N.getvid();
@@ -110,36 +114,38 @@ public class cc extends worker <pairmsg, Object>{
       while (!queue.isEmpty()) {
         uid=queue.poll();
         comp.add(uid);
-        for (int vid: fragment.getchildren(uid)) {
+        for (int vid: fragment.getglobal().getchildren(uid)) {
           minId=Math.min(minId, vid);
           if (fragment.isbelongtome(vid)) {
             if (! localComp.containsKey (vid) ) {
               queue.add(vid);
               localComp.put(vid, Integer.MAX_VALUE);
             }
-            else {
+            
+          }
+          else {
               outers.add(vid);
-            }
           }
         }
-        for (int vid: fragment.getparents(uid)) {
+        for (int vid: fragment.getglobal().getparents(uid)) {
           minId=Math.min(minId, vid);
           if (fragment.isbelongtome(vid)) {
             if (! localComp.containsKey(vid)) {
               queue.add(vid);
               localComp.put(vid, Integer.MAX_VALUE);
             }
-            else {
-              outers.add(vid);
-            }
+          }
+          else {
+            outers.add(vid);
           }
         }
-        while (! comp.isEmpty()) {
-          uid=comp.poll();
-          localComp.put(uid,minId);
-        }
-        globalComp.put(minId,minId);
-        outerNodes.put(minId, outers);
+      }
+      while (! comp.isEmpty()) {
+        uid=comp.poll();
+        localComp.put(uid,minId);
+      }
+      globalComp.put(minId,minId);
+      outerNodes.put(minId, outers);
 
         for (int vid: outers){
           if (! messages.containsKey(vid) || 
@@ -147,28 +153,27 @@ public class cc extends worker <pairmsg, Object>{
             messages.put(vid, minId);
           }
         }
-
-        for (Map.Entry<Integer, Integer> p: messages.entrySet()) {
-          uid = p.getKey();
-          int compId = p.getValue();
-          int fid=fragment.getnode(uid).getfid();
-          messageBuffer.addoutmsg(fid,new pairmsg (uid, compId));
-        }
-        cctemporal temp= new cctemporal(localComp, globalComp, outerNodes);
-        this.temporal.set(WID,temp);
-
-      }
     }
+    for (Map.Entry<Integer, Integer> p: messages.entrySet()) {
+      int uid = p.getKey();
+      int compId = p.getValue();
+      int fid=fragment.getglobal().getnode(uid).getfid();
+      messageBuffer.addoutmsg(fid,new pairmsg (uid, compId));
+    }
+
   }
+    
+  
 
   protected void inceval (frag fragment,
       Object query,
       mbuffer<pairmsg> messageBuffer) {
     int WID=fragment.getfid();
-    cctemporal temp=this.temporal.get(WID);
-    HashMap<Integer, Integer> localComp=temp.localComp;
-    HashMap<Integer, Integer> globalComp=temp.globalComp;
-    HashMap<Integer, ArrayList<Integer>> outerNodes=temp.outerNodes;
+    HashMap<Integer, Integer> messages=new HashMap<>();
+    HashMap<Integer, Integer> localComp=this.localComp.get(WID);
+    HashMap<Integer, Integer> globalComp=this.globalComp.get(WID);
+    HashMap<Integer, ArrayList<Integer>> 
+      outerNodes=this.outerNodes.get(WID);
 
     HashSet<Integer> updated = new HashSet<> ();
     for (pairmsg msg: messageBuffer.getinmsgs()) {
@@ -184,13 +189,12 @@ public class cc extends worker <pairmsg, Object>{
       }
     }
 
-    HashMap<Integer, Integer> messages=new HashMap<>();
     for (int uid: updated){
       int tag=globalComp.get(uid);
       for (int vid: outerNodes.get(uid)) {
         if (! messages.containsKey(vid) ||
             messages.get(vid) > tag) {
-          messages.put(vid,tag);
+            messages.put(vid,tag);
             }
       }
     }
@@ -198,28 +202,51 @@ public class cc extends worker <pairmsg, Object>{
     for (Map.Entry<Integer,Integer> p: messages.entrySet()) {
       int uid=p.getKey();
       int compId=p.getValue();
-      int fid=fragment.getnode(uid).getfid();
+      int fid=fragment.getglobal().getnode(uid).getfid();
       messageBuffer.addoutmsg(fid, new pairmsg(uid,compId));
     }
-
-    temp.globalComp=globalComp;
-    temp.localComp=localComp;
 
   }
 
 
   protected void assemble() {
-    TreeMap<Integer, Integer> ass=new TreeMap<>();
-    for 
+    for (int i=0;i<super.nfrag;++i ) {
+      HashMap<Integer, Integer> localComp=this.localComp.get(i);
+      HashMap<Integer, Integer> globalComp=this.globalComp.get(i);
 
-
+      for (Map.Entry<Integer, Integer> p: localComp.entrySet()) {
+        int uid=p.getKey();
+        int compId=p.getValue();
+        int minHash=globalComp.get(compId);
+        this.finalresult.put(uid, minHash);
+      }
+    }
   }
-  protected void write(){
-  }
 
-  protected void clear() {
-  }
+  
+    protected void write(){
+      FileWriter writer=null;
+      String path=String.format ("%s/%s-%s-query.dat" ,
+          super.prefix,
+          super.graphname, 
+          super.algorithm);
+      try {
+        writer = new FileWriter (path);
+        for (Map.Entry<Integer, Integer> p:
+            this.finalresult.entrySet()) {
+          writer.write(String.format ("%d\t%d\n", 
+                p.getKey(),
+                p.getValue()));
+        }
+        writer.close();
+      }
+      catch (IOException e){
+        System.err.println("IOException hitted when writing" + path );
+        System.exit(1);
+      }
 
+    }
 
+    protected void clear() { }
 
 }

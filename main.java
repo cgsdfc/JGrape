@@ -74,8 +74,10 @@ public class main{
 
 
       else if (argv_a.equals("cc")){
-        worker<pairmsg, pairmsg> main_w=
-          new cc( main_l.getfragments(), null);       
+        ArrayList<Object> dummyQ=new ArrayList<> ();
+        dummyQ.add(null);
+        worker<pairmsg, Object> main_w=
+          new cc( main_l.getfragments(), dummyQ);       
         main_w.setparameter(argv_a, argv_g, argv_p);
         main_w.run();
         main_w.write();

@@ -23,22 +23,17 @@
 */
 
 import java.lang.Iterable;
+import java.util.*;
 
 public interface Adjlist{
-
-        public Iterable<edge> getoutgoing(int vid);
-
-        public Iterable<edge> getincoming(int vid);
-
-        public int indegree(node N);
-        
-        public int outdegree(node N);
-
-        public node getdst(edge e);
-
-        public node getsrc(edge e);
-
-        public node getnode(int vid);
-
-        public edge getedge(int eid);
+  public Iterable<Integer> getparents(int vid);
+  public Iterable<Integer> getchildren(int vid);
+  public Iterable<edge> getoutgoing(int vid);
+  public Iterable<edge> getincoming(int vid);
+  public int indegree(node N);
+  public int outdegree(node N);
+  public node getdst(edge e);
+  public node getsrc(edge e);
+  public node getnode(int vid);
+  public edge getedge(int eid);
 }
