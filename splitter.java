@@ -30,7 +30,6 @@ import java.util.*;
 import java.io.*;
 public class splitter {
   private Scanner rs;
-  public static final int nfrag=4;
 
   splitter(String path) throws FileNotFoundException {
     this.rs=new Scanner(new FileReader(path));

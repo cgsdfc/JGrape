@@ -82,11 +82,4 @@ public class gparser implements parser {
     this.es=new Scanner(new FileReader(efile));
   } 
 
-  public static void main(String [] args) throws FileNotFoundException {
-    gparser gp=new gparser("simple.v", "simple.e");
-    graph g=new graph();
-    gp.fillgraph(g);
-    System.out.println(g);
-
-  }
 }

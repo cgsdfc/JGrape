@@ -83,19 +83,4 @@ public class loader  {
     return global;
   }
 
-
-  public static void main(String [] args)  throws FileNotFoundException {
-    parser p=new gparser ("simple.v","simple.e");
-    splitter s=new splitter("simple.r");
-    loader l=new loader (p, s);
-    squery q=new squery ("sssp-query");
-
-    System.out.println(l.getglobal());
-    for(frag f: l.getfragments()){
-      System.out.println(f);
-    }
-    System.out.println(q.loadquery());
-
-  }
-
 }

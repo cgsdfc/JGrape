@@ -61,6 +61,8 @@ public class main{
         main_w.run();
         main_w.write();
       }
+
+
       else if (argv_a.equals("bfs")){
         query<pairmsg> main_q=new bquery(argv_q);
         worker<pairmsg, pairmsg> main_w=new bfs( main_l.getfragments(), main_q.loadquery());
@@ -68,6 +70,18 @@ public class main{
         main_w.run();
         main_w.write();
       }
+
+
+
+      else if (argv_a.equals("cc")){
+        worker<pairmsg, pairmsg> main_w=
+          new cc( main_l.getfragments(), null);       
+        main_w.setparameter(argv_a, argv_g, argv_p);
+        main_w.run();
+        main_w.write();
+      }
+
+
       else {
         System.err.println("Unsupported Algorithm " + argv_a);
         System.exit(1);
