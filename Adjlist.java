@@ -22,12 +22,12 @@
 
 */
 
-import java.lang.Iterable;
+import java.lang.*;
 import java.util.*;
 
 public interface Adjlist{
-  public Iterable<Integer> getparents(int vid);
-  public Iterable<Integer> getchildren(int vid);
+  public Collection<Integer> getparents(int vid);
+  public Collection<Integer> getchildren(int vid);
   public Iterable<edge> getoutgoing(int vid);
   public Iterable<edge> getincoming(int vid);
   public int indegree(node N);
@@ -36,4 +36,7 @@ public interface Adjlist{
   public node getsrc(edge e);
   public node getnode(int vid);
   public edge getedge(int eid);
+  public Collection<node> getnodes();
+  public Collection<edge> getedges();
+  public void buildsignature();
 }

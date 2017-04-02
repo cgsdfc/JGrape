@@ -46,6 +46,18 @@ public class graph implements Adjlist {
   public graph(){
     init();
   }
+  public void buildsignature(){
+
+    //TODO
+  }
+
+  public boolean anychild(int vid){
+    return !this.outgoing.get(vid).isEmpty();
+  }
+
+  public boolean anyparent(int vid){
+    return !this.incoming.get(vid).isEmpty();
+  }
 
   public graph(HashMap<Integer, node> nodelist, HashMap<Integer, edge> edgelist) throws nosuchnode{
     this.nodelist=nodelist;

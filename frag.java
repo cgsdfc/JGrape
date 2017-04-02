@@ -32,11 +32,11 @@ import java.util.*;
 
 public class frag extends graph {
   private int fid;
-  Adjlist global;
+  graph global;
   private HashMap<Integer, HashSet<Integer>> outgoingfid;
   private HashMap<Integer, HashSet<Integer>> incomingfid;
 
-  frag(int fid, Adjlist global, HashMap<Integer, node> nodelist, HashMap<Integer, edge> edgelist) throws nosuchnode {
+  frag(int fid, graph global, HashMap<Integer, node> nodelist, HashMap<Integer, edge> edgelist) throws nosuchnode {
     super(nodelist, edgelist);
     this.fid=fid;
     this.global=global;
@@ -99,7 +99,7 @@ public class frag extends graph {
     return this.outgoingfid.get(vid);
   }
 
-  public Adjlist getglobal(){
+  public graph getglobal(){
     return global;
   }
 

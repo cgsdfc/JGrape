@@ -67,15 +67,18 @@ public class main{
         main_w=new bfs( main_l.getfragments(), main_q.loadquery());
         main_w.setparameter(argv_a, argv_g, argv_p);
       }
-
-
-
       else if (argv_a.equals("cc")){
         ArrayList<Object> dummyQ=new ArrayList<> ();
         dummyQ.add(null);
          main_w= new cc( main_l.getfragments(), dummyQ);       
         main_w.setparameter(argv_a, argv_g, argv_p);
       }
+      else if (argv_a.equals("sim")){
+        query<graph> main_q=new simquery(argv_q);
+        main_w=new sim(main_l.getfragments(),main_q.loadquery());       
+        main_w.setparameter(argv_a, argv_g, argv_p);
+      }
+
       else {
         System.err.println("Unsupported Algorithm " + argv_a);
         System.exit(1);

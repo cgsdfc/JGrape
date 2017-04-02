@@ -24,11 +24,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 import java.util.*;
 import java.io.*;
-public class simquery implements query<Adjlist> {
-  private ArrayList <Adjlist> pattern;
+public class simquery implements query<graph> {
+  private ArrayList <graph> pattern;
   private Scanner qs;
 
-  public ArrayList<Adjlist> loadquery () {
+  public ArrayList<graph> loadquery () {
     return pattern;
   }
 

@@ -70,6 +70,9 @@ public class node{
     this.vid=vid;
   }
 
+  public int getattr(){
+    return attr;
+  }
 
   public void setfid(int fid){
     this.fid=fid;
