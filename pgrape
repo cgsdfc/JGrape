@@ -1,0 +1,4 @@
+algo=$1
+graph=$2
+java para $algo $graph $graph/$graph.v $graph/$graph.e $graph/$graph.r \
+$algo/$graph.q 

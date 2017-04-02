@@ -27,40 +27,7 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 
-class Pair <K, V> {
-  private K key;
-  private V val;
 
-  public Pair (K key, V val) {
-    this.key=key;
-    this.val=val;
-  }
-
-  public String toString() {
-    return String . format ("{{ %s, %s }}", key.toString(),
-        val.toString());
-  }
-}
-
-class cctemporal {
-   
-  public  HashMap<Integer,Integer> localComp;
-  public  HashMap<Integer,Integer> globalComp;
-  public  HashMap<Integer,ArrayList<Integer>> outerNodes;
-
-
-  public cctemporal (
-      HashMap<Integer,Integer> localComp,
-      HashMap<Integer,Integer> globalComp,
-      HashMap<Integer,ArrayList<Integer>> outerNodes) {
-      this.localComp   =   localComp  ; 
-      this.globalComp  =   globalComp ;
-      this.outerNodes  =   outerNodes ;
-  }
-
-}
-
-// template<class MessageT, class ResultT, class TemporalT>
 // cc does not require a query
 public class cc extends worker <pairmsg, Object>{
 
@@ -98,16 +65,18 @@ public class cc extends worker <pairmsg, Object>{
     HashMap<Integer, Integer> globalComp=this.globalComp.get(WID);
     HashMap<Integer, ArrayList<Integer>> 
       outerNodes=this.outerNodes.get(WID);
+    ArrayDeque<Integer> queue = new ArrayDeque<> ();
+    ArrayDeque<Integer> comp=new ArrayDeque<> ();
 
     for (node N:fragment.getnodes()) {
       int xid=N.getvid();
+      queue.clear();
+      comp.clear();
       if (localComp.containsKey (xid))
         continue;
 
-      ArrayDeque<Integer> queue = new ArrayDeque<> ();
       queue.add (xid);
       localComp.put(xid, Integer.MAX_VALUE);
-      ArrayDeque<Integer> comp=new ArrayDeque<> ();
       ArrayList<Integer> outers=new ArrayList<> ();
       int minId = xid;
       int uid=0;
@@ -180,15 +149,22 @@ public class cc extends worker <pairmsg, Object>{
       int uid=msg.getvid();
       int tag=msg.getvalue();
       int compId=localComp.get(uid);
+      // compId is used to index into the outerNodes
+      // to send updating msg to them
+      // <compId, [vid in other fragments]> ==> outerNodes
 
       if (globalComp.get(compId) > tag){
+        // tag is the updated global comp id
         globalComp.put(compId,tag);
         if (! updated.contains(compId)) {
           updated.add(compId);
         }
       }
+    // <local, global> ==> globalComp
+    // <vid, local> ==> localComp
     }
 
+    // messages = [ <vid, global> : min { global } && unique { vid } ]
     for (int uid: updated){
       int tag=globalComp.get(uid);
       for (int vid: outerNodes.get(uid)) {

@@ -21,28 +21,43 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 02110-1301 USA
 
 */
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-public class squery implements query<Integer> {
+public class sim extends worker <pairmsg, Adjlist> {
 
-  private ArrayList<Integer> q;
-  private Scanner qs;
+  protected sim (
+      ArrayList<frag> fragments, ArrayList<Adjlist> queries)
+  {
+    super(fragments, queries);
+    int nfrag=super.nfrag;
 
-  public squery(String query) throws FileNotFoundException {
-    this.qs= new Scanner (new FileReader (query));
-    this.q=new ArrayList<>();
-    while(qs.hasNext()){
-      int i=qs.nextInt();
-      this.q.add(i);
-    }
+  }
+
+  protected void peval(frag fragment, 
+      Adjlist query,
+      mbuffer<pairmsg> messageBuffer) {
+
+    HashMap<Integer, HashSet<Integer>> simset,
+  }
+
+  protected void inceval (frag fragment,
+      Adjlist query,
+      mbuffer<pairmsg> messageBuffer) {
+    int WID=fragment.getfid();
+  }
+
+  protected void assemble() {
+
+  }
+
+  protected void write(){
+
   }
 
 
-  public ArrayList<Integer> loadquery() {
-    return this.q;
-  }
+  protected void clear() { }
 
-  
 }
+
 

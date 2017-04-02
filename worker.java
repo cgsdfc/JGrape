@@ -31,6 +31,7 @@ public abstract class worker<M,Q> {
   protected int nfrag;
   protected int maxstep;
   protected String prefix, algorithm, graphname;
+  protected Thread [] threads;
 
   public static final int MAX_STEP=100;
 
@@ -60,6 +61,7 @@ public abstract class worker<M,Q> {
     this.maxstep=MAX_STEP;
     this.algorithm=null;
     this.graphname=null;
+    this.threads=new Thread[this.nfrag];
 
     for(int i=0;i<nfrag;++i) {
       this.messages.add(new mbuffer<M> (nfrag));
@@ -74,6 +76,61 @@ public abstract class worker<M,Q> {
     }
     return halt == this.nfrag;
   }
+
+  class workerthread<M,Q> extends Thread {
+    private worker<M,Q> w;
+    private int superstep, WID;
+    private Q q;
+
+    public void run () {
+      if (superstep == 0) {
+        w.peval(w.fragments.get(WID),this.q,w.messages.get(WID));
+      }
+      else {
+        w.inceval(w.fragments.get(WID),this.q,w.messages.get(WID));
+      }
+    }
+
+    public workerthread (worker<M,Q> w, int superstep, int WID, Q q) {
+      this.w=w;
+      this.superstep=superstep;
+      this.WID=WID;
+      this.q=q;
+    }
+  }
+
+
+  private void sandbox  (int superstep, int WID, Q q) throws NullPointerException{
+      workerthread<M,Q> t=new workerthread<> (this, superstep, WID, q);
+      t.start();
+      this.threads[WID]=t;
+  }
+
+  protected void pararun(){
+    for(Q q: this.queries) {
+      for(int i=0;i<this.maxstep;++i){
+        try {
+          for(int j=0;j<this.nfrag;++j){
+            this.sandbox(i,j,q);
+          }
+          for(int j=0;j<this.nfrag;++j){
+            this.threads[j].join();
+          }
+        }
+        catch (Throwable t) {
+          t.printStackTrace();
+          System.exit(1);
+        }
+        this.sync();
+        if(this.isfinished()) {
+          break;
+        }
+      } 
+      this.assemble();
+      this.clear();
+    }
+  }
+
 
   protected void run(){
     for(Q q: this.queries) {

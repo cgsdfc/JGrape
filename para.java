@@ -1,7 +1,8 @@
+
 /* -*- mode: Java -*-  */
 /* vim:set ts=8 sw=2 sts=2 et: */
 /* 
- * class: main
+ * class: para
  * author: cong feng
  * date: March 17 2017
  * 
@@ -29,13 +30,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 import java.util.ArrayList;
 import java.io.*;
 
-public class main{
+public class para{
 
-  private static final int CMD_NUM = 7;
+  private static final int CMD_NUM = 6;
   public static void main(String [] args) {
     try{
       if(args.length != CMD_NUM){
-        System.err.printf("Usage: java main algorithm graph vfile efile rfile query use_multi_thread%n");
+        System.err.printf("Usage: java para algorithm graph vfile efile rfile query%n");
         System.exit(1);
       }
 
@@ -47,25 +48,28 @@ public class main{
       String argv_r=args[4];
       String argv_q=args[5];
       String argv_p=argv_a;
-      boolean use_multi_thread=Boolean.parseBoolean(args[6]);
 
       // new the objects
-      parser main_p=new gparser(argv_v, argv_e);
-      splitter main_s=new splitter(argv_r);
-      loader main_l=new loader(main_p, main_s);
-      worker main_w=null;
+      parser para_p=new gparser(argv_v, argv_e);
+      splitter para_s=new splitter(argv_r);
+      loader para_l=new loader(para_p, para_s);
+
       
       if (argv_a.equals("sssp")) {
-        query<Integer> main_q=new squery(argv_q);
-        main_w=new sssp(main_l.getfragments(), main_q.loadquery());
-        main_w.setparameter(argv_a, argv_g, argv_p);
+        query<Integer> para_q=new squery(argv_q);
+        worker<pairmsg, Integer> para_w=new sssp( para_l.getfragments(), para_q.loadquery());
+        para_w.setparameter(argv_a, argv_g, argv_p);
+        para_w.pararun();
+        para_w.write();
       }
 
 
       else if (argv_a.equals("bfs")){
-        query<pairmsg> main_q=new bquery(argv_q);
-        main_w=new bfs( main_l.getfragments(), main_q.loadquery());
-        main_w.setparameter(argv_a, argv_g, argv_p);
+        query<pairmsg> para_q=new bquery(argv_q);
+        worker<pairmsg, pairmsg> para_w=new bfs( para_l.getfragments(), para_q.loadquery());
+        para_w.setparameter(argv_a, argv_g, argv_p);
+        para_w.pararun();
+        para_w.write();
       }
 
 
@@ -73,18 +77,18 @@ public class main{
       else if (argv_a.equals("cc")){
         ArrayList<Object> dummyQ=new ArrayList<> ();
         dummyQ.add(null);
-         main_w= new cc( main_l.getfragments(), dummyQ);       
-        main_w.setparameter(argv_a, argv_g, argv_p);
+        worker<pairmsg, Object> para_w=
+          new cc( para_l.getfragments(), dummyQ);       
+        para_w.setparameter(argv_a, argv_g, argv_p);
+        para_w.pararun();
+        para_w.write();
       }
+
+
       else {
         System.err.println("Unsupported Algorithm " + argv_a);
         System.exit(1);
       }
-      if (use_multi_thread)
-        main_w.pararun () ;
-      else 
-        main_w.run();
-      main_w.write();
     }
     
     catch(FileNotFoundException f){
