@@ -121,7 +121,7 @@ public abstract class worker<M,Q> {
           t.printStackTrace();
           System.exit(1);
         }
-        this.sync();
+        this.exchange();
         if(this.isfinished()) {
           break;
         }
@@ -150,7 +150,7 @@ public abstract class worker<M,Q> {
           }
 
         }
-        this.sync();
+        this.exchange();
         if(this.isfinished()) {
           break;
         }
@@ -161,7 +161,7 @@ public abstract class worker<M,Q> {
 
   }
 
-  protected void sync(){
+  protected void exchange(){
     for(int i=0;i<this.nfrag;++i){
       this.messages.get(i).inclear();
     }

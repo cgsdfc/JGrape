@@ -109,7 +109,7 @@ public class sim extends worker <Integer, graph> {
         cnt.trimToSize();
         count.put(vid, cnt);
         active.put(vid, true);
-        if (fragment.anychild(vid)) {
+        if (fragment.getglobal().anychild(vid)) {
           prev.add(vid);
         }
       }

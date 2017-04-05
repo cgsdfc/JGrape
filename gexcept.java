@@ -41,8 +41,6 @@ class cmdargsnumberr extends gexcept {
   }
 }
 
-@SuppressWarnings("serial")
-class grapherror extends gexcept {}
 
 @SuppressWarnings("serial")
 class nosuchnode extends grapherror{

@@ -3,4 +3,4 @@
 algo=$1
 graph=$2
 jdbshell main $algo $graph $graph/$graph.v $graph/$graph.e $graph/$graph.r \
-$algo/$graph.q 
+$algo/$graph.q $3
