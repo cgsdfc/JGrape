@@ -1,4 +1,6 @@
 algo=$1
 graph=$2
-java main $algo $graph $graph/$graph.v $graph/$graph.e $graph/$graph.r \
-$algo/$graph.q $3
+para=$3
+java jgrape.src.main.java.cn.edu.buaa.jiaowu.core.main\
+ $algo $graph $graph/$graph.v $graph/$graph.e $graph/$graph.r \
+$algo/$graph.q $para
